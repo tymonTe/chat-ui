@@ -107,9 +107,15 @@ export const OpenAIStream = async (
 
       const parser = createParser(onParse);
 
+      let openAiResponse = '';
       for await (const chunk of res.body as any) {
-        parser.feed(decoder.decode(chunk));
+        let text = decoder.decode(chunk);
+        parser.feed(text);
+
+        openAiResponse += text;
       }
+
+      console.log('openai response', openAiResponse);
     },
   });
 
