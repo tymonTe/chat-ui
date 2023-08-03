@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import openai
 import os
+from utils.app.consts import DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE
 
 app = Flask(__name__)
 
@@ -38,9 +39,36 @@ def home():
     return 'Hello, World!'
 
 
-@app.route('/api/chat')
+@app.route('/api/chat', methods=['POST'])
 def chat():
-    return 'About'
+    data = request.json
+    model = data.get('model')
+    messages = data.get('messages')
+    key = data.get('key')
+    prompt = data.get('prompt', DEFAULT_SYSTEM_PROMPT)
+    temperature = data.get('temperature', DEFAULT_TEMPERATURE)
+    openai.api_key = key if key else os.getenv("OPENAI_API_KEY")
+
+    def generate():
+        response = openai.ChatCompletion.create(
+            model=model,
+            temperature=temperature,
+            messages=[
+                         {"role": "system", "content": prompt}
+                     ] + messages,
+            stream=True,
+        )
+        print('ready to stream')
+
+        output = ''
+        for chunk in response:
+            if chunk['choices'][0]['finish_reason'] == 'stop':
+                break
+            output += chunk['choices'][0]['delta']['content']
+
+        return output
+
+    return app.response_class(generate(), mimetype='text/plain')
 
 
 @app.route('/api/models', methods=['POST'])

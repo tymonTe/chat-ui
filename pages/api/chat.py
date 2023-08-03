@@ -3,7 +3,6 @@ import json
 from tiktoken import Tokenizer
 from tiktoken.models import Model
 
-from utils.app.consts import DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE
 
 
 class handler(BaseHTTPRequestHandler):
