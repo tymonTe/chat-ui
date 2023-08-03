@@ -42,7 +42,7 @@ def home():
 @app.route('/api/chat', methods=['POST'])
 def chat():
     data = request.json
-    model = data.get('model')
+    model = data.get('model')['id']
     messages = data.get('messages')
     key = data.get('key')
     prompt = data.get('prompt', DEFAULT_SYSTEM_PROMPT)
@@ -58,17 +58,13 @@ def chat():
                      ] + messages,
             stream=True,
         )
-        print('ready to stream')
 
-        output = ''
         for chunk in response:
             if chunk['choices'][0]['finish_reason'] == 'stop':
                 break
-            output += chunk['choices'][0]['delta']['content']
+            yield chunk['choices'][0]['delta']['content']
 
-        return output
-
-    return app.response_class(generate(), mimetype='text/plain')
+    return app.response_class(generate())
 
 
 @app.route('/api/models', methods=['POST'])
