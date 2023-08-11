@@ -16,6 +16,7 @@ import { getEndpoint } from '@/utils/app/api';
 import {
   saveConversation,
   saveConversations,
+  saveCustomSystemPrompt,
   updateConversation,
 } from '@/utils/app/conversation';
 import { throttle } from '@/utils/data/throttle';
@@ -197,7 +198,11 @@ export const Chat = memo(({ stopConversationRef }: Props) => {
               });
             }
           }
+
           saveConversation(updatedConversation);
+          saveCustomSystemPrompt(updatedConversation.prompt);
+          homeDispatch({ field: 'customSystemPrompt', value: updatedConversation.prompt });
+
           const updatedConversations: Conversation[] = conversations.map(
             (conversation) => {
               if (conversation.id === selectedConversation.id) {

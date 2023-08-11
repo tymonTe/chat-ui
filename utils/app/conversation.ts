@@ -25,6 +25,10 @@ export const saveConversation = (conversation: Conversation) => {
   localStorage.setItem('selectedConversation', JSON.stringify(conversation));
 };
 
+export const saveCustomSystemPrompt = (prompt: string) => {
+  localStorage.setItem('customSystemPrompt', prompt);
+};
+
 export const saveConversations = (conversations: Conversation[]) => {
   localStorage.setItem('conversationHistory', JSON.stringify(conversations));
 };

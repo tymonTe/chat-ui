@@ -191,7 +191,7 @@ const Home = ({
         maxLength: OpenAIModels[defaultModelId].maxLength,
         tokenLimit: OpenAIModels[defaultModelId].tokenLimit,
       },
-      prompt: DEFAULT_SYSTEM_PROMPT,
+      prompt: contextValue.state.customSystemPrompt,
       temperature: lastConversation?.temperature ?? DEFAULT_TEMPERATURE,
       folderId: null,
     };
@@ -295,6 +295,11 @@ const Home = ({
     const folders = localStorage.getItem('folders');
     if (folders) {
       dispatch({ field: 'folders', value: JSON.parse(folders) });
+    }
+
+    const customSystemPrompt = localStorage.getItem('customSystemPrompt');
+    if (customSystemPrompt) {
+      dispatch({ field: 'customSystemPrompt', value: customSystemPrompt });
     }
 
     const prompts = localStorage.getItem('prompts');
